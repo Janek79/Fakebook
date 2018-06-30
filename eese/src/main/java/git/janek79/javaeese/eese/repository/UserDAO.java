@@ -6,8 +6,9 @@ import git.janek79.javaeese.eese.entity.Conversation;
 import git.janek79.javaeese.eese.entity.User;
 
 public interface UserDAO {
-	public void addUser(String firstName, String lastName);
+	public void addUser(String login, String password, String firstName, String lastName);
 	
+	public User getUserbyLogin(String login, String password);
 	public User getUser(String firstName, String lastName);
 	public User getUser(int id);
 	

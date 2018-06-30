@@ -28,8 +28,8 @@ public class UserService implements UserDAO, ConversationDAO {
 	public UserService() {
 	}
 
-	public void addUser(String firstName, String lastName) {
-		this.userDAO.addUser(firstName, lastName);
+	public void addUser(String login, String password, String firstName, String lastName) {
+		this.userDAO.addUser(login, password, firstName, lastName);
 	}
 
 	public User getUser(int id) {
@@ -142,6 +142,11 @@ public class UserService implements UserDAO, ConversationDAO {
 	@Override
 	public void addFriend(int user1Id, int user2Id) {
 		this.userDAO.addFriend(user1Id, user2Id);
+	}
+	
+	@Override
+	public User getUserbyLogin(String login, String password) {
+		return this.userDAO.getUserbyLogin(login, password);
 	}
 
 }

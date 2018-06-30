@@ -18,14 +18,14 @@ public class UserDAOImpl implements UserDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public void addUser(String firstName, String lastName) {
+	public void addUser(String login, String password, String firstName, String lastName) {
 		System.out.println(sessionFactory);
 		Session session = sessionFactory.getCurrentSession();
 
 		User u = getUser(firstName, lastName);
 
 		if (u == null) {
-			session.save(new User(firstName, lastName));
+			session.save(new User(login, password, firstName, lastName));
 			System.out.println("User added successfully");
 		} else {
 			System.out.println(u + " already exists");
@@ -121,5 +121,22 @@ public class UserDAOImpl implements UserDAO {
 			u1.getFriendsList().add(u2);
 			System.out.println("Friend added successfully!");
 		}
+	}
+	
+	@Override
+	public User getUserbyLogin(String login, String password) {
+		Session session = sessionFactory.getCurrentSession();
+
+		List<User> list = session
+				.createQuery("FROM User u WHERE u.login='" + login + "' AND u.password='" + password + "'",
+						User.class)
+				.getResultList();
+
+		if (list.size() == 1) {
+			return list.get(0);
+		}
+		
+		return null;
+		
 	}
 }
