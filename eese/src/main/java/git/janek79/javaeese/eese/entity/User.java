@@ -16,30 +16,43 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
 	
-	@Column(name="first_name")
+	@Column(name="login")
+	private String login;
+	
+	@Column(name="password")
+	private String password;
+
+	@Column(name = "first_name")
 	private String firstName;
-	
-	@Column(name="last_name")
+
+	@Column(name = "last_name")
 	private String lastName;
-	
-	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinTable(name="user_conversation", joinColumns=@JoinColumn(name="user_id"), inverseJoinColumns=@JoinColumn(name="conversation_id"))
+
+	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	@JoinTable(name = "user_conversation", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "conversation_id"))
 	private List<Conversation> conversationsList = new ArrayList<>();
-	
-	@OneToMany(mappedBy="userId", cascade= {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+
+	@OneToMany(mappedBy = "userId", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
 	private List<Message> messagesList = new ArrayList<>();
+
+	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	@JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user1_id"), inverseJoinColumns = @JoinColumn(name = "user2_id"))
+	private List<User> friendsList = new ArrayList<>();
 
 	public User() {
 	}
 
-	public User(String firstName, String lastName) {
+	public User(String login, String password, String firstName, String lastName) {
+		this.login = login;
+		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
@@ -88,6 +101,13 @@ public class User {
 	public void setMessagesList(List<Message> messagesList) {
 		this.messagesList = messagesList;
 	}
-	
-	
+
+	public List<User> getFriendsList() {
+		return friendsList;
+	}
+
+	public void setFriendsList(List<User> friendsList) {
+		this.friendsList = friendsList;
+	}
+
 }

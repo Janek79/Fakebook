@@ -18,14 +18,14 @@ public class UserDAOImpl implements UserDAO {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public void addUser(String firstName, String lastName) {
+	public void addUser(String login, String password, String firstName, String lastName) {
 		System.out.println(sessionFactory);
 		Session session = sessionFactory.getCurrentSession();
-		
+
 		User u = getUser(firstName, lastName);
 
 		if (u == null) {
-			session.save(new User(firstName, lastName));
+			session.save(new User(login, password, firstName, lastName));
 			System.out.println("User added successfully");
 		} else {
 			System.out.println(u + " already exists");
@@ -47,7 +47,7 @@ public class UserDAOImpl implements UserDAO {
 				.createQuery("FROM User u WHERE u.firstName='" + firstName + "' AND u.lastName='" + lastName + "'",
 						User.class)
 				.getResultList();
-		
+
 		if (list.size() == 1) {
 			return list.get(0);
 		} else if (list.size() > 1) {
@@ -67,8 +67,8 @@ public class UserDAOImpl implements UserDAO {
 
 		if (u != null && c != null) {
 			List<Conversation> list = session.get(User.class, user.getId()).getConversationsList();
-			
-			if(!list.contains(c)) {
+
+			if (!list.contains(c)) {
 				list.add(conversation);
 			} else {
 				System.out.println("User already belong to this conversation!");
@@ -90,7 +90,7 @@ public class UserDAOImpl implements UserDAO {
 	public List<Conversation> getConversationsList(User user) {
 		return getUser(user.getId()).getConversationsList();
 	}
-	
+
 	@Override
 	public List<Conversation> getConversationsList(int userId) {
 		return getUser(userId).getConversationsList();
@@ -99,10 +99,44 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public boolean belongToConversation(User user, Conversation conversation) {
 		Session session = sessionFactory.getCurrentSession();
-		
+
 		User u = getUser(user.getId());
 		Conversation c = session.get(Conversation.class, conversation.getId());
-		
+
 		return u.getConversationsList().contains(c);
+	}
+
+	@Override
+	public void addFriend(int user1Id, int user2Id) {
+		Session session = sessionFactory.getCurrentSession();
+				
+		User u1 = getUser(user1Id);
+		User u2 = getUser(user2Id);
+		
+		if(u1==null || u2==null) {
+			System.out.println("Not able to find user(s)!");
+		} else if(u1.getFriendsList().contains(u2)) {
+			System.out.println("Those users are friends already!");
+		} else {
+			u1.getFriendsList().add(u2);
+			System.out.println("Friend added successfully!");
+		}
+	}
+	
+	@Override
+	public User getUserbyLogin(String login, String password) {
+		Session session = sessionFactory.getCurrentSession();
+
+		List<User> list = session
+				.createQuery("FROM User u WHERE u.login='" + login + "' AND u.password='" + password + "'",
+						User.class)
+				.getResultList();
+
+		if (list.size() == 1) {
+			return list.get(0);
+		}
+		
+		return null;
+		
 	}
 }
