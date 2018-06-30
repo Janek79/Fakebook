@@ -27,7 +27,9 @@ public class App {
 			//userService.sendMessage("Testowo", userService.getUser(2), userService.getConversation(1));
 			
 //			userService.joinConversation(userService.getUser(3), userService.getConversation(1));
-			userService.sendMessage("Stary czas", userService.getUser(3), userService.getConversation(1));
+//			userService.sendMessage("Stary czas", userService.getUser(3), userService.getConversation(1));
+			
+			userService.addFriend(1, 2);
 			
 		List<Message> list = userService.getMessagesList(1);
 		for(Message msg: list) {

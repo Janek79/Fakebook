@@ -138,5 +138,10 @@ public class UserService implements UserDAO, ConversationDAO {
 		
 		return list;
 	}
+	
+	@Override
+	public void addFriend(int user1Id, int user2Id) {
+		this.userDAO.addFriend(user1Id, user2Id);
+	}
 
 }

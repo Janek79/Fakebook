@@ -17,4 +17,6 @@ public interface UserDAO {
 	public List<Conversation> getConversationsList(int userId);
 	
 	public boolean belongToConversation(User user, Conversation conversation);
+	
+	public void addFriend(int user1Id, int user2Id);
 }
