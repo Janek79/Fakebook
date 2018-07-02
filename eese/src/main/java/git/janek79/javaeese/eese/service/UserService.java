@@ -1,5 +1,6 @@
 package git.janek79.javaeese.eese.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -121,8 +122,8 @@ public class UserService implements UserDAO, ConversationDAO {
 	}
 	
 	@Override
-	public List<Message> getMessagesList(int id) {
-		List<Message> list = this.conversationDAO.getMessagesList(id);
+	public List<Message> getMessagesList(int conversationId) {
+		List<Message> list = this.conversationDAO.getMessagesList(conversationId);
 		
 		Collections.sort(list, new Comparator<Message>() {
 			@Override
@@ -147,6 +148,31 @@ public class UserService implements UserDAO, ConversationDAO {
 	@Override
 	public User getUserbyLogin(String login, String password) {
 		return this.userDAO.getUserbyLogin(login, password);
+	}
+	
+	@Override
+	public User getUserbyLogin(String login) {
+		return this.userDAO.getUserbyLogin(login);
+	}
+	
+	@Override
+	public List<User> getFriendsList(int userId) {
+		return this.userDAO.getFriendsList(userId);
+	}
+	
+	public String[] createFriendsArray(User user){
+		List<User> friends = this.userDAO.getFriendsList(user.getId());
+		List<String> list = new ArrayList<>();
+		for(User u: friends) {
+			list.add(u.getFirstName() + " " + u.getLastName() + " : " + u.getLogin());
+		}
+		
+		return list.toArray(new String[list.size()]);
+	}
+	
+	@Override
+	public Conversation getConversationWithUser(int user1Id, int user2Id) {
+		return this.userDAO.getConversationWithUser(user1Id, user2Id);
 	}
 
 }

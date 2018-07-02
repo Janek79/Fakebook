@@ -9,7 +9,7 @@ public interface ConversationDAO {
 	public void createConservation(String title);
 	public void createConservation();
 	
-	public Conversation getConversation(int ConversationId);
+	public Conversation getConversation(int conversationId);
 	
-	public List<Message> getMessagesList(int ConversationId);
+	public List<Message> getMessagesList(int conversationId);
 }
