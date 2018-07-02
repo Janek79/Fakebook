@@ -37,9 +37,9 @@ public class ConversationDAOImpl implements ConversationDAO {
 	}
 	
 	@Override
-	public List<Message> getMessagesList(int id) {
+	public List<Message> getMessagesList(int conversationId) {
 		Session session = sessionFactory.getCurrentSession();
 		
-		return session.get(Conversation.class, id).getMessagesList();
+		return session.get(Conversation.class, conversationId).getMessagesList();
 	}
 }

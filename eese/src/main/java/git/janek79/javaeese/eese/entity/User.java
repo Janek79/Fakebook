@@ -46,6 +46,10 @@ public class User {
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user1_id"), inverseJoinColumns = @JoinColumn(name = "user2_id"))
 	private List<User> friendsList = new ArrayList<>();
+	
+	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	@JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user2_id"), inverseJoinColumns = @JoinColumn(name = "user1_id"))
+	private List<User> friendsOfList = new ArrayList<>();
 
 	public User() {
 	}
@@ -108,6 +112,30 @@ public class User {
 
 	public void setFriendsList(List<User> friendsList) {
 		this.friendsList = friendsList;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<User> getFriendsOfList() {
+		return friendsOfList;
+	}
+
+	public void setFriendsOfList(List<User> friendsOfList) {
+		this.friendsOfList = friendsOfList;
 	}
 
 }

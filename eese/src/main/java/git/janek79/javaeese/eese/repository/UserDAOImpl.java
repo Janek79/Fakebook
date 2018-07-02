@@ -115,10 +115,11 @@ public class UserDAOImpl implements UserDAO {
 		
 		if(u1==null || u2==null) {
 			System.out.println("Not able to find user(s)!");
-		} else if(u1.getFriendsList().contains(u2)) {
+		} else if(u1.getFriendsList().contains(u2) || u2.getFriendsList().contains(u1)) {
 			System.out.println("Those users are friends already!");
 		} else {
 			u1.getFriendsList().add(u2);
+			u2.getFriendsList().add(u1);
 			System.out.println("Friend added successfully!");
 		}
 	}
@@ -138,5 +139,60 @@ public class UserDAOImpl implements UserDAO {
 		
 		return null;
 		
+	}
+	
+	@Override
+	public User getUserbyLogin(String login) {
+		Session session = sessionFactory.getCurrentSession();
+
+		List<User> list = session
+				.createQuery("FROM User u WHERE u.login='" + login + "'",
+						User.class)
+				.getResultList();
+
+		if (list.size() == 1) {
+			return list.get(0);
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public List<User> getFriendsList(int userId) {
+		Session session = sessionFactory.getCurrentSession();
+			
+		return session.get(User.class, userId).getFriendsList();
+	}
+	
+	@Override
+	public Conversation getConversationWithUser(int user1Id, int user2Id) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user1 = session.get(User.class, user1Id); 
+		User user2 = session.get(User.class, user2Id);
+		
+		System.out.println(user1.getFirstName());
+		System.out.println(user2.getFirstName());
+		
+		if(user1 == null || user2 == null) {
+			System.out.println("Such users don't exist");
+		} else {
+			List<Conversation> cList = user1.getConversationsList();
+			for(int i = 0; i < cList.size(); i++) {
+				if(belongToConversation(user2, cList.get(i)) && cList.get(i).getUsersList().size()==2) {
+					System.out.println("ZWRACAM!");
+					return cList.get(i);
+				}
+				System.out.println("Pętla");
+			}
+			System.out.println("Nie zwróciło");
+			Conversation con = new Conversation();
+			session.save(con);
+			joinConversation(user1, con);
+			joinConversation(user2, con);
+			return con;
+		}
+		
+		return null;
 	}
 }
