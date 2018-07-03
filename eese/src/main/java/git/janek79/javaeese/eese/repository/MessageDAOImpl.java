@@ -13,14 +13,14 @@ import git.janek79.javaeese.eese.entity.User;
 @Repository
 @Transactional
 public class MessageDAOImpl implements MessageDAO {
-	
+
 	@Autowired
 	SessionFactory sessionFactory;
 
 	@Override
 	public void sendMessage(String message, User user, Conversation conversation) {
 		Session session = sessionFactory.getCurrentSession();
-		
+
 		Message msg = new Message(message, user, conversation);
 
 		session.save(msg);
@@ -34,6 +34,4 @@ public class MessageDAOImpl implements MessageDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
-	
-	
 }

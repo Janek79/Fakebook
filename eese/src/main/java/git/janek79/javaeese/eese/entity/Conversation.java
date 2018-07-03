@@ -14,25 +14,26 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="conversations")
+@Table(name = "conversations")
 public class Conversation {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="title")
+
+	@Column(name = "title")
 	private String title;
-	
-	@ManyToMany(mappedBy="conversationsList", cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+
+	@ManyToMany(mappedBy = "conversationsList", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
 	private List<User> usersList = new ArrayList<>();
-	
-	@OneToMany(mappedBy="conversationId", cascade=CascadeType.ALL)
+
+	@OneToMany(mappedBy = "conversationId", cascade = CascadeType.ALL)
 	private List<Message> messagesList = new ArrayList<>();
 
 	public Conversation() {
 	}
-	
+
 	public Conversation(String title) {
 		this.title = title;
 	}
@@ -73,8 +74,5 @@ public class Conversation {
 	public void setMessagesList(List<Message> messagesList) {
 		this.messagesList = messagesList;
 	}
-	
-	
-	
-	
+
 }

@@ -22,11 +22,11 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-	
-	@Column(name="login")
+
+	@Column(name = "login")
 	private String login;
-	
-	@Column(name="password")
+
+	@Column(name = "password")
 	private String password;
 
 	@Column(name = "first_name")
@@ -46,10 +46,6 @@ public class User {
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user1_id"), inverseJoinColumns = @JoinColumn(name = "user2_id"))
 	private List<User> friendsList = new ArrayList<>();
-	
-	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-	@JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user2_id"), inverseJoinColumns = @JoinColumn(name = "user1_id"))
-	private List<User> friendsOfList = new ArrayList<>();
 
 	public User() {
 	}
@@ -128,14 +124,6 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public List<User> getFriendsOfList() {
-		return friendsOfList;
-	}
-
-	public void setFriendsOfList(List<User> friendsOfList) {
-		this.friendsOfList = friendsOfList;
 	}
 
 }
