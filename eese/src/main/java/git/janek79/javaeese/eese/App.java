@@ -47,8 +47,6 @@ public class App {
 			context = new AnnotationConfigApplicationContext(ConfigClass.class);
 			System.out.println("Hello World!");
 			userService = context.getBean(UserService.class);
-			userService.addFriend(4, 2);
-			userService.addFriend(4, 3);
 
 			JFrame frame = new JFrame("Fakebook");
 			frame.setVisible(true);

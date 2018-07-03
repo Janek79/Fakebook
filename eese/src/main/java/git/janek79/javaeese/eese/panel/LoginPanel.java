@@ -41,7 +41,6 @@ public class LoginPanel extends JPanel {
 
 		panel1.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		// Welcome in Fakebook label
 		JLabel lbl1 = new JLabel("Welcome in Fakebook!");
 		lbl1.setFont(myFont);
 		lbl1.setAlignmentX(JComponent.CENTER_ALIGNMENT);
@@ -49,7 +48,6 @@ public class LoginPanel extends JPanel {
 
 		panel1.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		// text field for login
 		JTextField txt1 = new JTextField(1);
 		txt1.setText("login");
 		txt1.setMaximumSize(new Dimension(200, 20));
@@ -58,7 +56,6 @@ public class LoginPanel extends JPanel {
 
 		panel1.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		// text field for password
 		JTextField txt2 = new JPasswordField(1);
 		txt2.setText("password");
 		txt2.setMaximumSize(new Dimension(200, 20));
@@ -103,15 +100,18 @@ public class LoginPanel extends JPanel {
 				if (user != null) {
 					System.out.println("You've been logged in successfully!");
 					frame.remove(panel1);
-//					createMainPanel(frame, userService);
 					new MainPanel(frame, user, userService);
-					lbl3.setVisible(false);
 				} else {
 					System.out.println("Wrong login or password");
 					lbl3.setVisible(true);
 					frame.setSize(320, 280);
 				}
 			}
+		});
+		
+		btn2.addActionListener((e)->{
+			frame.remove(panel1);
+			new RegisterPanel(frame, userService);
 		});
 		
 		txt1.addMouseListener(new MouseListener() {

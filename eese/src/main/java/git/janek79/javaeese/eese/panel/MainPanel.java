@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.swing.Box;
@@ -28,6 +29,7 @@ public class MainPanel extends JPanel {
 	private UserService userService;
 	private User user;
 	private Conversation currentConversation = null;
+	
 	private Font myFont = new Font("Arial", Font.BOLD, 20);
 	
 	public MainPanel(JFrame frame, User user, UserService userService) {
@@ -83,10 +85,14 @@ public class MainPanel extends JPanel {
 			} else if (txtArea2.getText().trim().equals("")) {
 				System.out.println("Message cannot be empty!");
 			} else {
-				userService.sendMessage(txtArea2.getText(), user, currentConversation);
-				System.out.println("Message '" + txtArea2.getText() + "' has been send!");
-				txtArea2.setText("");
-				updateConversation(txtArea1);
+				try {
+					userService.sendMessage(txtArea2.getText(), user, currentConversation);
+					System.out.println("Message '" + txtArea2.getText() + "' has been send!");
+					txtArea2.setText("");
+					updateConversation(txtArea1);
+				} catch(Exception exc) {
+					txtArea2.setText("Your message contains invalid chars");
+				}
 			}
 
 		});
@@ -114,7 +120,7 @@ public class MainPanel extends JPanel {
 					System.out.println("ZMIANA");
 					// System.out.println(catchLogin(lst1.getSelectedValue()));
 					currentConversation = userService.getConversationWithUser(user.getId(),
-							userService.getUserbyLogin(catchLogin(lst1.getSelectedValue())).getId());
+					userService.getUserbyLogin(catchLogin(lst1.getSelectedValue())).getId());
 					System.out.println(currentConversation.getId());
 					updateConversation(txtArea1);
 				}
