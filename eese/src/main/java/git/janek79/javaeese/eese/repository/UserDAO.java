@@ -25,5 +25,7 @@ public interface UserDAO {
 	public void addFriend(int user1Id, int user2Id);
 	
 	public List<User> getFriendsList(int userId);
+	
+	public boolean deleteAccount(int userId);
 
 }

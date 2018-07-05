@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 import git.janek79.javaeese.eese.entity.User;
 import git.janek79.javaeese.eese.service.UserService;
 
-public class LoginPanel extends JPanel {
+public class LoginPanel {
 	private UserService userService;
 	private User user = null;
 	private Font myFont = new Font("Arial", Font.BOLD, 20);

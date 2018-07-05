@@ -195,4 +195,21 @@ public class UserDAOImpl implements UserDAO {
 		
 		return null;
 	}
+	
+	@Override
+	public boolean deleteAccount(int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user = session.get(User.class, userId);
+		
+		if(user == null) {
+			System.out.println("Such user doesn't exist");
+			return false;
+		} else {
+			session.remove(user);
+			System.out.println("User has been removed");
+			return true;
+		}
+		
+	}
 }

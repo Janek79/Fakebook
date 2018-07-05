@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.Box;
@@ -15,6 +15,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
@@ -25,7 +26,7 @@ import git.janek79.javaeese.eese.entity.Message;
 import git.janek79.javaeese.eese.entity.User;
 import git.janek79.javaeese.eese.service.UserService;
 
-public class MainPanel extends JPanel {
+public class MainPanel {
 	private UserService userService;
 	private User user;
 	private Conversation currentConversation = null;
@@ -118,7 +119,6 @@ public class MainPanel extends JPanel {
 
 				if (!e.getValueIsAdjusting()) {
 					System.out.println("ZMIANA");
-					// System.out.println(catchLogin(lst1.getSelectedValue()));
 					currentConversation = userService.getConversationWithUser(user.getId(),
 					userService.getUserbyLogin(catchLogin(lst1.getSelectedValue())).getId());
 					System.out.println(currentConversation.getId());
@@ -138,6 +138,26 @@ public class MainPanel extends JPanel {
 			new LoginPanel(frame, userService);
 		});
 		pnl1.add(btn4);
+		
+		JButton btn5 = new JButton("Delete account");
+		btn5.addActionListener((e) -> {
+			String result = JOptionPane.showInputDialog("Are you sure that you want to delete your account? \n "
+					+ "If yes please type in your password:");
+			if(result.equals(this.user.getPassword())) {
+				if(userService.deleteAccount(user.getId())) {
+					JOptionPane.showMessageDialog(frame, "Your account has been deleted");
+					this.user = null;
+					currentConversation = null;
+					frame.remove(panel);
+					new LoginPanel(frame, userService);
+				} else {
+					JOptionPane.showMessageDialog(frame, "Something goes wrong :O");
+				}
+			} else {
+				JOptionPane.showMessageDialog(frame, "Wrong password");
+			}
+		});
+		pnl1.add(btn5);
 
 		panel.revalidate();
 		pnl2.revalidate();

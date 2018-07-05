@@ -1,5 +1,7 @@
 package git.janek79.javaeese.eese.repository;
 
+import java.util.Date;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,12 @@ public class MessageDAOImpl implements MessageDAO {
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+	
+//	@Override
+	public boolean isNewMessageAppear(Date lastMessageTime) {
+		Session session = sessionFactory.getCurrentSession();
+		return false;
 	}
 
 }

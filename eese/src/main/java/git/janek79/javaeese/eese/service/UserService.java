@@ -174,5 +174,10 @@ public class UserService implements UserDAO, ConversationDAO {
 	public Conversation getConversationWithUser(int user1Id, int user2Id) {
 		return this.userDAO.getConversationWithUser(user1Id, user2Id);
 	}
+	
+	@Override
+	public boolean deleteAccount(int userId) {
+		return this.userDAO.deleteAccount(userId);
+	}
 
 }
