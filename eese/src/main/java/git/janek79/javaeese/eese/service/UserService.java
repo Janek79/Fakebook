@@ -179,6 +179,9 @@ public class UserService implements UserDAO, ConversationDAO {
 		return this.userDAO.deleteAccount(userId);
 	}
 
-	
+	@Override
+	public Conversation getConversation(List<Integer> usersId) {
+		return this.conversationDAO.getConversation(usersId);
+	}
 	
 }

@@ -10,6 +10,7 @@ public interface ConversationDAO {
 	public Conversation createConservation();
 	
 	public Conversation getConversation(int conversationId);
+	public Conversation getConversation(List<Integer> usersId);
 	
 	public List<Message> getMessagesList(int conversationId);
 }

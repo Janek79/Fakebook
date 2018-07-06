@@ -29,7 +29,10 @@ import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
+
 import com.google.protobuf.Extension.MessageType;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 import git.janek79.javaeese.eese.entity.Conversation;
 import git.janek79.javaeese.eese.entity.Message;
@@ -244,7 +247,7 @@ public class MainPanel {
 			item1.addActionListener((event) -> {
 				List<User> friendsToChoose = new ArrayList<>();
 				for (User u : friendsList) {
-					if(!this.currentConversation.getUsersList().contains(u)) {
+					if (!this.currentConversation.getUsersList().contains(u)) {
 						friendsToChoose.add(u);
 					}
 				}
@@ -253,7 +256,22 @@ public class MainPanel {
 							"Adding friend", JOptionPane.QUESTION_MESSAGE, null,
 							friendsToChoose.toArray(new User[friendsToChoose.size()]), null);
 					if (choosedUser != null) {
-						if (currentConversation.getUsersList().size() > 2) {
+						List<Integer> usersId = new ArrayList<>();
+						for (User u : currentConversation.getUsersList()) {
+							usersId.add(u.getId());
+						}
+						usersId.add(choosedUser.getId());
+						Conversation existingConversation = this.userService.getConversation(usersId);
+
+						if (existingConversation != null) {
+							currentConversation = existingConversation;
+							updateConversation(txtArea1);
+							
+							lst1.clearSelection();
+							conversationsList.setSelectedValue(currentConversation, true);
+							lst1.repaint();
+							conversationsList.repaint();
+						} else if (currentConversation.getUsersList().size() > 2) {
 							this.userService.joinConversation(choosedUser.getId(), currentConversation.getId());
 						} else if (currentConversation.getUsersList().size() == 2) {
 							Conversation conversation = this.userService.createConservation();
@@ -263,8 +281,11 @@ public class MainPanel {
 							this.currentConversation = conversation;
 							updateConversationsList(conversationsList);
 							updateConversation(txtArea1);
+							
 							lst1.clearSelection();
 							conversationsList.setSelectedValue(conversation, true);
+							lst1.repaint();
+							conversationsList.repaint();
 						}
 					}
 				} else {
@@ -321,4 +342,5 @@ public class MainPanel {
 		}
 		conversationsList.setListData(conList.toArray(new Conversation[conList.size()]));
 	}
+
 }
