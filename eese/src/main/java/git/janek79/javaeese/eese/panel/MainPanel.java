@@ -242,76 +242,93 @@ public class MainPanel {
 		});
 
 		btn31.addActionListener((e) -> {
+
 			JPopupMenu menu = new JPopupMenu();
 			JMenuItem item1 = new JMenuItem("Add friend to conversation...");
-			item1.addActionListener((event) -> {
-				List<User> friendsToChoose = new ArrayList<>();
-				for (User u : friendsList) {
-					if (!this.currentConversation.getUsersList().contains(u)) {
-						friendsToChoose.add(u);
-					}
-				}
-				if (!friendsToChoose.isEmpty()) {
-					User choosedUser = (User) JOptionPane.showInputDialog(frame, "Choose friend from list",
-							"Adding friend", JOptionPane.QUESTION_MESSAGE, null,
-							friendsToChoose.toArray(new User[friendsToChoose.size()]), null);
-					if (choosedUser != null) {
-						List<Integer> usersId = new ArrayList<>();
-						for (User u : currentConversation.getUsersList()) {
-							usersId.add(u.getId());
-						}
-						usersId.add(choosedUser.getId());
-						Conversation existingConversation = this.userService.getConversation(usersId);
-
-						if (existingConversation != null) {
-							currentConversation = existingConversation;
-							updateConversation(txtArea1);
-							
-							lst1.clearSelection();
-							conversationsList.setSelectedValue(currentConversation, true);
-							lst1.repaint();
-							conversationsList.repaint();
-						} else if (currentConversation.getUsersList().size() > 2) {
-							this.userService.joinConversation(choosedUser.getId(), currentConversation.getId());
-						} else if (currentConversation.getUsersList().size() == 2) {
-							Conversation conversation = this.userService.createConservation();
-							this.userService.joinConversation(user.getId(), conversation.getId());
-							this.userService.joinConversation(choosedUser.getId(), conversation.getId());
-							this.userService.joinConversation(lst1.getSelectedValue().getId(), conversation.getId());
-							this.currentConversation = conversation;
-							updateConversationsList(conversationsList);
-							updateConversation(txtArea1);
-							
-							lst1.clearSelection();
-							conversationsList.setSelectedValue(conversation, true);
-							lst1.repaint();
-							conversationsList.repaint();
-						}
-					}
-				} else {
-					JOptionPane.showMessageDialog(frame, "You haven't any friends abled to add", ": - (",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			});
 			if (currentConversation != null) {
+				item1.addActionListener((event) -> {
+					List<User> friendsToChoose = new ArrayList<>();
+					for (User u : friendsList) {
+						if (!this.currentConversation.getUsersList().contains(u)) {
+							friendsToChoose.add(u);
+						}
+					}
+					if (!friendsToChoose.isEmpty()) {
+
+						User choosedUser = (User) JOptionPane.showInputDialog(frame, "Choose friend from list",
+								"Adding friend", JOptionPane.QUESTION_MESSAGE, null,
+								friendsToChoose.toArray(new User[friendsToChoose.size()]), null);
+
+						if (choosedUser != null) {
+
+							List<Integer> usersId = new ArrayList<>();
+							for (User u : currentConversation.getUsersList()) {
+								usersId.add(u.getId());
+							}
+							usersId.add(choosedUser.getId());
+							Conversation existingConversation = this.userService.getConversation(usersId);
+							// && existingConversation.getUsersList().size() == 2
+							if (existingConversation != null) {
+
+								currentConversation = existingConversation;
+								updateConversation(txtArea1);
+
+								lst1.clearSelection();
+								conversationsList.setSelectedValue(currentConversation, true);
+								lst1.repaint();
+								conversationsList.repaint();
+
+							} else if (currentConversation.getUsersList().size() > 2) {
+
+								this.userService.joinConversation(choosedUser.getId(), currentConversation.getId());
+
+							} else if (currentConversation.getUsersList().size() == 2) {
+
+								Conversation conversation = this.userService.createConservation();
+								this.userService.joinConversation(user.getId(), conversation.getId());
+								this.userService.joinConversation(choosedUser.getId(), conversation.getId());
+								this.userService.joinConversation(lst1.getSelectedValue().getId(),
+										conversation.getId());
+								this.currentConversation = conversation;
+								updateConversationsList(conversationsList);
+								updateConversation(txtArea1);
+
+								lst1.clearSelection();
+								conversationsList.setSelectedValue(conversation, true);
+								lst1.repaint();
+								conversationsList.repaint();
+
+								System.out.println("Nowa konwersacja");
+							}
+						}
+					} else {
+						JOptionPane.showMessageDialog(frame, "You haven't any friends abled to add", ": - (",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				});
+
 				menu.add(item1);
 			}
 
-			JMenuItem item2 = new JMenuItem("Left conversation");
-			item2.addActionListener((event) -> {
-				// User choosedUser = (User) JOptionPane.showInputDialog(frame, "Choose friend
-				// from list", "Adding friend", JOptionPane.QUESTION_MESSAGE, null,
-				// friendsList.toArray(new User[friendsList.size()]), null);
-				// if(currentConversation.getUsersList().size()>2) {
-				// this.userService.joinConversation(choosedUser, currentConversation);
-				// } else {
-				// Conversation conversation = this.userService.createConservation();
-				// this.userService.joinConversation(user, conversation);
-				// this.userService.joinConversation(user, conversation);
-				// updateConversationsList(conversationsList);
-				// }
-			});
-			menu.add(item2);
+			if (currentConversation.getUsersList().size() > 2) {
+				
+				JMenuItem item2 = new JMenuItem("Left conversation");
+				item2.addActionListener((event) -> {
+					
+					this.userService.leftConversation(user.getId(), currentConversation.getId());
+					this.currentConversation = null;
+
+					updateConversationsList(conversationsList);
+					lst1.clearSelection();
+					conversationsList.clearSelection();
+					lst1.repaint();
+					conversationsList.repaint();
+					txtArea1.setText("Choose conversation!");
+					
+				});
+
+				menu.add(item2);
+			}
 
 			JMenuItem item11 = new JMenuItem("Cancel");
 			menu.add(item11);

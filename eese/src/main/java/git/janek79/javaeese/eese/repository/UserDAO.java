@@ -15,6 +15,8 @@ public interface UserDAO {
 	
 	public void joinConversation(int userId, int conversationId);
 	
+	public void leftConversation(int userId, int conversationId);
+	
 	public List<Conversation> getConversationsList(User user);
 	public List<Conversation> getConversationsList(int userId);
 	

@@ -216,4 +216,18 @@ public class UserDAOImpl implements UserDAO {
 		}
 		
 	}
+	
+	@Override
+	public void leftConversation(int userId, int conversationId) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user = session.get(User.class, userId);
+		Conversation conversation = session.get(Conversation.class, conversationId);
+		
+		if(user == null || conversation == null) {
+			System.out.println("Such user or conversation doesn't exists");
+		} else {
+			user.getConversationsList().remove(conversation);
+		}
+	}
 }

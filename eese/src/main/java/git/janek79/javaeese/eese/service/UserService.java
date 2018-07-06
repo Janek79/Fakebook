@@ -184,4 +184,9 @@ public class UserService implements UserDAO, ConversationDAO {
 		return this.conversationDAO.getConversation(usersId);
 	}
 	
+	@Override
+	public void leftConversation(int userId, int conversationId) {
+		this.userDAO.leftConversation(userId, conversationId);
+	}
+	
 }
