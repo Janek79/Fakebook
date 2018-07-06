@@ -59,17 +59,17 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void joinConversation(User user, Conversation conversation) {
+	public void joinConversation(int userId, int conversationId) {
 		Session session = sessionFactory.getCurrentSession();
 
-		User u = session.get(User.class, user.getId());
-		Conversation c = session.get(Conversation.class, conversation.getId());
+		User u = session.get(User.class, userId);
+		Conversation c = session.get(Conversation.class, conversationId);
 
 		if (u != null && c != null) {
-			List<Conversation> list = session.get(User.class, user.getId()).getConversationsList();
+			List<Conversation> list = session.get(User.class, userId).getConversationsList();
 
 			if (!list.contains(c)) {
-				list.add(conversation);
+				list.add(c);
 			} else {
 				System.out.println("User already belong to this conversation!");
 			}
@@ -93,7 +93,11 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public List<Conversation> getConversationsList(int userId) {
-		return getUser(userId).getConversationsList();
+		Session session = sessionFactory.getCurrentSession();
+		
+		List<Conversation> conversationsList = session.get(User.class, userId).getConversationsList();
+		
+		return conversationsList;
 	}
 
 	@Override
@@ -188,8 +192,8 @@ public class UserDAOImpl implements UserDAO {
 			System.out.println("Nie zwróciło");
 			Conversation con = new Conversation();
 			session.save(con);
-			joinConversation(user1, con);
-			joinConversation(user2, con);
+			joinConversation(user1.getId(), con.getId());
+			joinConversation(user2.getId(), con.getId());
 			return con;
 		}
 		

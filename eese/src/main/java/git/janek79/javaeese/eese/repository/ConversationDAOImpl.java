@@ -18,15 +18,17 @@ public class ConversationDAOImpl implements ConversationDAO {
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public void createConservation() {
-		createConservation("Conversation");
+	public Conversation createConservation() {
+		return createConservation("Conversation");
 	}
 	@Override
-	public void createConservation(String title) {
+	public Conversation createConservation(String title) {
 		Session session = sessionFactory.getCurrentSession();
 		Conversation conversation = new Conversation(title);
 		
-		session.save(conversation);		
+		session.save(conversation);	
+		
+		return conversation;
 	}
 	
 	@Override

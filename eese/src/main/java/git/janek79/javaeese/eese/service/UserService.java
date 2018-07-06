@@ -37,8 +37,8 @@ public class UserService implements UserDAO, ConversationDAO {
 		return this.userDAO.getUser(id);
 	}
 	
-	public void joinConversation(User user, Conversation conversation) {
-		userDAO.joinConversation(user, conversation);
+	public void joinConversation(int userId, int conversationId) {
+		userDAO.joinConversation(userId, conversationId);
 	}
 	
 	public void sendMessage(String message, User user, Conversation conversation) {
@@ -56,13 +56,13 @@ public class UserService implements UserDAO, ConversationDAO {
 	}
 
 	@Override
-	public void createConservation() {
-		this.conversationDAO.createConservation();
+	public Conversation createConservation() {
+		return this.conversationDAO.createConservation();
 	}
 	
 	@Override
-	public void createConservation(String title) {
-		this.conversationDAO.createConservation(title);
+	public Conversation createConservation(String title) {
+		return this.conversationDAO.createConservation(title);
 	}
 
 	@Override
@@ -105,8 +105,7 @@ public class UserService implements UserDAO, ConversationDAO {
 
 	@Override
 	public List<Conversation> getConversationsList(int userId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.userDAO.getConversationsList(userId);
 	}
 	
 	@Override
@@ -180,4 +179,6 @@ public class UserService implements UserDAO, ConversationDAO {
 		return this.userDAO.deleteAccount(userId);
 	}
 
+	
+	
 }

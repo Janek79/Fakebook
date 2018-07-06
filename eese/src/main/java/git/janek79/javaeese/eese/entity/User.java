@@ -92,7 +92,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + "]";
+		return getFirstName() + " " + getLastName() + ": " + getLogin();
 	}
 
 	public List<Message> getMessagesList() {
@@ -125,6 +125,23 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == this) {
+			return true;
+		}
+		
+		if(obj instanceof User) {
+			return ((User)obj).getId()==this.id;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.id;
 	}
 
 }

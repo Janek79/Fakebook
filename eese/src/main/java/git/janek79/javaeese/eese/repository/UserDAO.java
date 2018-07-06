@@ -13,7 +13,7 @@ public interface UserDAO {
 	public User getUser(String firstName, String lastName);
 	public User getUser(int id);
 	
-	public void joinConversation(User user, Conversation conversation);
+	public void joinConversation(int userId, int conversationId);
 	
 	public List<Conversation> getConversationsList(User user);
 	public List<Conversation> getConversationsList(int userId);

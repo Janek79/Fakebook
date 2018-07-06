@@ -6,8 +6,8 @@ import git.janek79.javaeese.eese.entity.Conversation;
 import git.janek79.javaeese.eese.entity.Message;
 
 public interface ConversationDAO {
-	public void createConservation(String title);
-	public void createConservation();
+	public Conversation createConservation(String title);
+	public Conversation createConservation();
 	
 	public Conversation getConversation(int conversationId);
 	

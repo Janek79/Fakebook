@@ -1,7 +1,9 @@
 package git.janek79.javaeese.eese.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -62,17 +64,49 @@ public class Conversation {
 		this.usersList = usersList;
 	}
 
-	@Override
-	public String toString() {
-		return "Conversation [id=" + id + ", title=" + title + ", usersList=" + usersList + "]";
-	}
-
 	public List<Message> getMessagesList() {
 		return messagesList;
 	}
 
 	public void setMessagesList(List<Message> messagesList) {
 		this.messagesList = messagesList;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		for(User user: this.usersList) {
+			result.append(user.getFirstName() + " " + user.getLastName() + ", ");
+		}
+		return result.delete(result.length()-2, result.length()).toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) {
+			return true;
+		}
+		
+		if(obj instanceof Conversation) {
+			List<User> objList = ((Conversation) obj).getUsersList();
+			if(objList.size() == getUsersList().size()) {
+				Set<Integer> objIdList = new HashSet<>();
+				Set<Integer> thisIdList = new HashSet<>();
+				
+				for(User u: objList) {
+					objIdList.add(u.getId());
+				}
+				
+				for(User u: getUsersList()) {
+					thisIdList.add(u.getId());
+				}
+				
+				return objIdList.equals(thisIdList);
+			
+			}
+		}
+		
+		return false;
 	}
 
 }
