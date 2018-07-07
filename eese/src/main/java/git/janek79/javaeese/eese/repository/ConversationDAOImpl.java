@@ -56,12 +56,13 @@ public class ConversationDAOImpl implements ConversationDAO {
 
 		Session session = sessionFactory.getCurrentSession();
 
+		Conversation testedConversation = new Conversation();
 		List<User> usersList = new ArrayList<>();
 
 		for (Integer userId : usersId) {
 			User user = session.get(User.class, userId);
 			if (user != null) {
-				usersList.add(user);
+				testedConversation.getUsersList().add(user);
 			} else {
 				System.out.println("Such conversation doesn't exist");
 				return null;
@@ -70,24 +71,35 @@ public class ConversationDAOImpl implements ConversationDAO {
 
 		System.out.println(usersList);
 
-		Conversation result = null;
-
-		for (Conversation conversation : usersList.get(0).getConversationsList()) {
-			System.out.println(conversation);
-			if (conversation.getUsersList().size() == usersList.size()) {
-				System.out.println("Ta sama wielkość");
-				for (User user : usersList) {
-					System.out.println(user);
-					if (!conversation.getUsersList().contains(user)) {
-						System.out.println("Null?");
-						System.out.println(user);
-					}
-				}
-				System.out.println("Zwrot?");
-				result = conversation;
+		for(Conversation conversation: testedConversation.getUsersList().get(0).getConversationsList()) {
+			System.out.println("Tested conversation: " + conversation);
+			if(conversation.equals(testedConversation)) {
+				System.out.println("JEST!!!");
+				return conversation;
 			}
 		}
+		
+		return null;
+		
+//		Conversation result = null;
 
-		return result;
+//		for (Conversation conversation : usersList.get(0).getConversationsList()) {
+//			System.out.println("Nowa pętla");
+//			System.out.println(conversation);
+//			result = conversation;
+//			if (conversation.getUsersList().size() == usersList.size()) {
+//				System.out.println("Ta sama wielkość");
+//				for (User user : usersList) {
+//					System.out.println(user);
+//					if (!conversation.getUsersList().contains(user)) {
+//						System.out.println("Null?");
+//						System.out.println(user);
+//						result = null;
+//						break;
+//					}
+//				}
+//			}
+//		}
+
 	}
 }

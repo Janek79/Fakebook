@@ -1,10 +1,5 @@
 package git.janek79.javaeese.eese;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JFrame;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -34,6 +29,8 @@ public class App {
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 			new LoginPanel(frame, userService);
+			
+//			System.out.println(userService.getPossibleUsers(""));
 			
 			while(true) {
 				

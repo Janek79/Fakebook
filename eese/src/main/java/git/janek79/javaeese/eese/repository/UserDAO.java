@@ -1,6 +1,7 @@
 package git.janek79.javaeese.eese.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import git.janek79.javaeese.eese.entity.Conversation;
 import git.janek79.javaeese.eese.entity.User;
@@ -12,6 +13,8 @@ public interface UserDAO {
 	public User getUserbyLogin(String login);
 	public User getUser(String firstName, String lastName);
 	public User getUser(int id);
+	
+	public Set<User> getPossibleUsers(String string);
 	
 	public void joinConversation(int userId, int conversationId);
 	

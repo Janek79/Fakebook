@@ -33,7 +33,7 @@ public class JDBCConnectionTest {
 		}
 		
 		try {
-			Connection con = DriverManager.getConnection(url, user, password);
+			DriverManager.getConnection(url, user, password);
 		} catch (SQLException e) {
 			System.out.println("Connetction with database failed");
 		}

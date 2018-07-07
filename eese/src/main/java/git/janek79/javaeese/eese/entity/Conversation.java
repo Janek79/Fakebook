@@ -108,5 +108,14 @@ public class Conversation {
 		
 		return false;
 	}
+	
+	@Override
+	public int hashCode() {
+		int sum = 0;
+		for(User u: getUsersList()) {
+			sum =+ u.getId();
+		}
+		return sum;
+	}
 
 }

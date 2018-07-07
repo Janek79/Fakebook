@@ -4,18 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.MouseInfo;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -24,15 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-
-import com.google.protobuf.Extension.MessageType;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 import git.janek79.javaeese.eese.entity.Conversation;
 import git.janek79.javaeese.eese.entity.Message;
@@ -135,6 +124,10 @@ public class MainPanel {
 		pnl1.add(conversationsList);
 
 		pnl1.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+//		JButton btnOptions = new JButton("Options");
+//		pnl1.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+//		pnl1.add(btnOptions);
 
 		JPanel panelBtn = new JPanel();
 		panelBtn.setBackground(new Color(203, 42, 20));
@@ -267,7 +260,9 @@ public class MainPanel {
 							}
 							usersId.add(choosedUser.getId());
 							Conversation existingConversation = this.userService.getConversation(usersId);
-							// && existingConversation.getUsersList().size() == 2
+							
+							System.out.println("There is " + existingConversation);
+							
 							if (existingConversation != null) {
 
 								currentConversation = existingConversation;
@@ -292,6 +287,7 @@ public class MainPanel {
 								this.currentConversation = conversation;
 								updateConversationsList(conversationsList);
 								updateConversation(txtArea1);
+								lbl6.setVisible(true);
 
 								lst1.clearSelection();
 								conversationsList.setSelectedValue(conversation, true);

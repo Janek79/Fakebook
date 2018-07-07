@@ -1,6 +1,9 @@
 package git.janek79.javaeese.eese.repository;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -229,5 +232,36 @@ public class UserDAOImpl implements UserDAO {
 		} else {
 			user.getConversationsList().remove(conversation);
 		}
+	}
+	
+	@Override
+	public Set<User> getPossibleUsers(String string) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		Set<User> result = new HashSet<>();
+		
+		Set<User> firstNameResults = new HashSet<>(session.createQuery("FROM User u WHERE u.firstName LIKE '%" + string + "%'", User.class).getResultList());
+		Set<User> lastNameResults = new HashSet<>(session.createQuery("FROM User u WHERE u.lastName LIKE '%" + string + "%'", User.class).getResultList());
+		Set<User> loginNameResults = new HashSet<>(session.createQuery("FROM User u WHERE u.login LIKE '%" + string + "%'", User.class).getResultList());
+		
+		
+		String[] splited = string.split(" ");
+		if(splited.length > 1) {
+		Set<User> otherResults1 = new HashSet<>(session.createQuery("FROM User u WHERE u.firstName LIKE '%" + string.split(" ")[0] + "%'", User.class).getResultList());
+		Set<User> otherResults2 = new HashSet<>(session.createQuery("FROM User u WHERE u.lastName LIKE '%" + string.split(" ")[1] + "%'", User.class).getResultList());
+		Set<User> otherResults3 = new HashSet<>(session.createQuery("FROM User u WHERE u.lastName LIKE '%" + string.split(" ")[0] + "%'", User.class).getResultList());
+		Set<User> otherResults4 = new HashSet<>(session.createQuery("FROM User u WHERE u.firstName LIKE '%" + string.split(" ")[1] + "%'", User.class).getResultList());
+		
+		result.addAll(otherResults1);
+		result.addAll(otherResults2);
+		result.addAll(otherResults3);
+		result.addAll(otherResults4);
+		}
+		
+		result.addAll(firstNameResults);
+		result.addAll(lastNameResults);
+		result.addAll(loginNameResults);
+		
+		return result;
 	}
 }

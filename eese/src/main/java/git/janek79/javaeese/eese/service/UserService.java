@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -187,6 +188,11 @@ public class UserService implements UserDAO, ConversationDAO {
 	@Override
 	public void leftConversation(int userId, int conversationId) {
 		this.userDAO.leftConversation(userId, conversationId);
+	}
+	
+	@Override
+	public Set<User> getPossibleUsers(String string) {
+		return this.userDAO.getPossibleUsers(string);
 	}
 	
 }
