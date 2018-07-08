@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -194,5 +196,15 @@ public class UserService implements UserDAO, ConversationDAO {
 	public Set<User> getPossibleUsers(String string) {
 		return this.userDAO.getPossibleUsers(string);
 	}
+	
+	@Override
+	public boolean deleteFriendship(int user1Id, int user2Id) {
+		return this.userDAO.deleteFriendship(user1Id, user2Id);
+	}
+	
+//	public boolean removeAccount() {
+//		
+//		return true;
+//	}
 	
 }

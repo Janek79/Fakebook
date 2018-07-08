@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import git.janek79.javaeese.eese.entity.Conversation;
+import git.janek79.javaeese.eese.entity.Message;
 import git.janek79.javaeese.eese.entity.User;
 
 @Repository
@@ -209,11 +212,24 @@ public class UserDAOImpl implements UserDAO {
 		
 		User user = session.get(User.class, userId);
 		
+		
 		if(user == null) {
 			System.out.println("Such user doesn't exist");
 			return false;
 		} else {
+			
+			List<Conversation> conversations = new ArrayList<>(user.getConversationsList());
+			for(Conversation conversation: conversations) {
+				if(conversation.getUsersList().size()==2) {
+					conversation.preRemove();
+					session.remove(conversation);
+				}
+			}
+
+		
+			user.preRemove();
 			session.remove(user);
+			
 			System.out.println("User has been removed");
 			return true;
 		}
@@ -263,5 +279,23 @@ public class UserDAOImpl implements UserDAO {
 		result.addAll(loginNameResults);
 		
 		return result;
+	}
+	
+	@Override
+	public boolean deleteFriendship(int user1Id, int user2Id) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user1 = session.get(User.class, user1Id);
+		User user2 = session.get(User.class, user2Id);
+		
+		if(user1 == null || user2 == null) {
+			System.out.println("Users don't exist");
+			return false;
+		} else {
+			user1.getFriendsList().remove(user2);
+			user2.getFriendsList().remove(user1);
+			System.out.println("Friendship removed");
+			return true;
+		}
 	}
 }

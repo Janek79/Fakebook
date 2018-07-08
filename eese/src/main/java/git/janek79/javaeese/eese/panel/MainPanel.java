@@ -29,13 +29,15 @@ import git.janek79.javaeese.eese.entity.User;
 import git.janek79.javaeese.eese.service.UserService;
 
 public class MainPanel {
-	private UserService userService;
-	private User user;
-	private Conversation currentConversation = null;
-
+	private static UserService userService;
+	private static User user;
+	private static Conversation currentConversation = null;
+	
 	private Font myFont = new Font("Arial", Font.BOLD, 20);
 
-	private JLabel lbl6;
+	private static JList<User> lst1;
+	private static JList<Conversation> conversationsList;
+	private static JLabel lbl6;
 
 	public MainPanel(JFrame frame, User user, UserService userService) {
 		this.userService = userService;
@@ -102,7 +104,7 @@ public class MainPanel {
 
 		pnl1.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		JList<User> lst1 = new JList<>();
+		lst1 = new JList<>();
 		List<User> friendsList = user.getFriendsList();
 		lst1.setListData(friendsList.toArray(new User[friendsList.size()]));
 		lst1.setAlignmentX(JComponent.CENTER_ALIGNMENT);
@@ -118,37 +120,37 @@ public class MainPanel {
 
 		pnl1.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		JList<Conversation> conversationsList = new JList<>();
-		updateConversationsList(conversationsList);
+		conversationsList = new JList<>();
+		updateConversationsList();
 
 		pnl1.add(conversationsList);
 
 		pnl1.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-//		JButton btnOptions = new JButton("Options");
-//		pnl1.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-//		pnl1.add(btnOptions);
 
-		JPanel panelBtn = new JPanel();
-		panelBtn.setBackground(new Color(203, 42, 20));
-		panelBtn.setLayout(new BoxLayout(panelBtn, BoxLayout.LINE_AXIS));
-		pnl1.add(panelBtn);
+		JButton btnOption = new JButton("Options");
+		btnOption.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+		pnl1.add(btnOption);
 
-		JButton btn4 = new JButton("Log out");
-		panelBtn.add(btn4);
-
-		panelBtn.add(Box.createRigidArea(new Dimension(5, 0)));
-
-		JButton btn5 = new JButton("Delete account");
-		panelBtn.add(btn5);
+		// JPanel panelBtn = new JPanel();
+		// panelBtn.setBackground(new Color(203, 42, 20));
+		// panelBtn.setLayout(new BoxLayout(panelBtn, BoxLayout.LINE_AXIS));
+		// pnl1.add(panelBtn);
+		//
+		// JButton btn4 = new JButton("Log out");
+		// panelBtn.add(btn4);
+		//
+		// panelBtn.add(Box.createRigidArea(new Dimension(5, 0)));
+		//
+		// JButton btn5 = new JButton("Delete account");
+		// panelBtn.add(btn5);
 
 		panel.revalidate();
 		pnl2.revalidate();
 		pnl1.revalidate();
-		panelBtn.revalidate();
+		// panelBtn.revalidate();
 		pnl1.repaint();
 		pnl2.repaint();
-		panelBtn.repaint();
+		// panelBtn.repaint();
 
 		// listeners
 		btn3.addActionListener((e) -> {
@@ -209,39 +211,67 @@ public class MainPanel {
 			}
 		});
 
-		btn4.addActionListener((e) -> {
-			this.user = null;
-			currentConversation = null;
-			frame.remove(panel);
-			new LoginPanel(frame, userService);
-		});
+		btnOption.addActionListener((e) -> {
 
-		btn5.addActionListener((e) -> {
-			String result = JOptionPane.showInputDialog(
-					"Are you sure that you want to delete your account? \n " + "If yes please type in your password:");
-			if (result.equals(this.user.getPassword())) {
-				if (userService.deleteAccount(user.getId())) {
-					JOptionPane.showMessageDialog(frame, "Your account has been deleted");
-					this.user = null;
-					currentConversation = null;
-					frame.remove(panel);
-					new LoginPanel(frame, userService);
+			JPopupMenu menu = new JPopupMenu();
+			
+			JMenuItem searchFriendsItem = new JMenuItem("Search friends");
+			
+			
+			searchFriendsItem.addActionListener((event) -> {
+				new SearchPanel(frame, user, userService);
+			});
+			menu.add(searchFriendsItem);
+
+			
+			JMenuItem logoutItem = new JMenuItem("Log out");
+
+			logoutItem.addActionListener((event) -> {
+				this.user = null;
+				currentConversation = null;
+				frame.remove(panel);
+				new LoginPanel(frame, userService);
+			});
+
+			menu.add(logoutItem);
+
+			JMenuItem deleteAccountItem = new JMenuItem("Delete account");
+
+			deleteAccountItem.addActionListener((event) -> {
+				String result = JOptionPane.showInputDialog("Are you sure that you want to delete your account? \n "
+						+ "If yes please type in your password:");
+				if (result.equals(this.user.getPassword())) {
+					if (userService.deleteAccount(this.user.getId())) {
+						JOptionPane.showMessageDialog(frame, "Your account has been deleted");
+						this.user = null;
+						currentConversation = null;
+						frame.remove(panel);
+						new LoginPanel(frame, userService);
+					} else {
+						JOptionPane.showMessageDialog(frame, "Something goes wrong :O");
+					}
 				} else {
-					JOptionPane.showMessageDialog(frame, "Something goes wrong :O");
+					JOptionPane.showMessageDialog(frame, "Wrong password");
 				}
-			} else {
-				JOptionPane.showMessageDialog(frame, "Wrong password");
-			}
+			});
+
+			menu.add(deleteAccountItem);
+			
+			
+			menu.show(frame, btnOption.getX(), btnOption.getY());
+
 		});
 
 		btn31.addActionListener((e) -> {
 
 			JPopupMenu menu = new JPopupMenu();
 			JMenuItem item1 = new JMenuItem("Add friend to conversation...");
+			
 			if (currentConversation != null) {
 				item1.addActionListener((event) -> {
+					currentConversation = userService.getConversation(currentConversation.getId());
 					List<User> friendsToChoose = new ArrayList<>();
-					for (User u : friendsList) {
+					for (User u : userService.getFriendsList(user.getId())) {
 						if (!this.currentConversation.getUsersList().contains(u)) {
 							friendsToChoose.add(u);
 						}
@@ -260,9 +290,9 @@ public class MainPanel {
 							}
 							usersId.add(choosedUser.getId());
 							Conversation existingConversation = this.userService.getConversation(usersId);
-							
+
 							System.out.println("There is " + existingConversation);
-							
+
 							if (existingConversation != null) {
 
 								currentConversation = existingConversation;
@@ -285,7 +315,7 @@ public class MainPanel {
 								this.userService.joinConversation(lst1.getSelectedValue().getId(),
 										conversation.getId());
 								this.currentConversation = conversation;
-								updateConversationsList(conversationsList);
+								updateConversationsList();
 								updateConversation(txtArea1);
 								lbl6.setVisible(true);
 
@@ -304,26 +334,26 @@ public class MainPanel {
 				});
 
 				menu.add(item1);
-			}
 
-			if (currentConversation.getUsersList().size() > 2) {
-				
-				JMenuItem item2 = new JMenuItem("Left conversation");
-				item2.addActionListener((event) -> {
-					
-					this.userService.leftConversation(user.getId(), currentConversation.getId());
-					this.currentConversation = null;
+				if (currentConversation.getUsersList().size() > 2) {
 
-					updateConversationsList(conversationsList);
-					lst1.clearSelection();
-					conversationsList.clearSelection();
-					lst1.repaint();
-					conversationsList.repaint();
-					txtArea1.setText("Choose conversation!");
-					
-				});
+					JMenuItem item2 = new JMenuItem("Left conversation");
+					item2.addActionListener((event) -> {
 
-				menu.add(item2);
+						this.userService.leftConversation(user.getId(), currentConversation.getId());
+						this.currentConversation = null;
+
+						updateConversationsList();
+						lst1.clearSelection();
+						conversationsList.clearSelection();
+						lst1.repaint();
+						conversationsList.repaint();
+						txtArea1.setText("Choose conversation!");
+
+					});
+
+					menu.add(item2);
+				}
 			}
 
 			JMenuItem item11 = new JMenuItem("Cancel");
@@ -341,7 +371,7 @@ public class MainPanel {
 		}
 	}
 
-	public void updateConversationsList(JList<Conversation> conversationsList) {
+	public static void updateConversationsList() {
 		List<Conversation> conList = userService.getConversationsList(user.getId());
 
 		for (int i = 0; i < conList.size(); i++) {
@@ -355,5 +385,11 @@ public class MainPanel {
 		}
 		conversationsList.setListData(conList.toArray(new Conversation[conList.size()]));
 	}
+	
+	public static void updateFriendsList() {
+		List<User> friendsList = userService.getFriendsList(user.getId());
 
+		lst1.setListData(friendsList.toArray(new User[friendsList.size()]));
+	}
+	
 }

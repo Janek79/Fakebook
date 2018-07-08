@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -116,6 +117,19 @@ public class Conversation {
 			sum =+ u.getId();
 		}
 		return sum;
+	}
+	
+	@PreRemove
+	public void preRemove() {
+		System.out.println("Usuwanie konwersacji");
+		
+		for(User u: this.usersList) {
+			u.getConversationsList().remove(this);
+		}
+		
+		for(Message m: this.messagesList) {
+			m.setConversationId(null);
+		}
 	}
 
 }

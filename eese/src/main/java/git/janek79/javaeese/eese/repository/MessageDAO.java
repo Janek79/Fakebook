@@ -1,7 +1,5 @@
 package git.janek79.javaeese.eese.repository;
 
-import java.util.Date;
-
 import git.janek79.javaeese.eese.entity.Conversation;
 import git.janek79.javaeese.eese.entity.User;
 

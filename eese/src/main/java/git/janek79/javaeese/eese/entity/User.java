@@ -13,7 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -40,8 +42,7 @@ public class User {
 	@JoinTable(name = "user_conversation", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "conversation_id"))
 	private List<Conversation> conversationsList = new ArrayList<>();
 
-	@OneToMany(mappedBy = "userId", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-			CascadeType.REFRESH })
+	@OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
 	private List<Message> messagesList = new ArrayList<>();
 
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
@@ -142,6 +143,25 @@ public class User {
 	@Override
 	public int hashCode() {
 		return this.id;
+	}
+	
+	@PreRemove
+	public void preRemove() {
+		System.out.println("Usuwanie użytkownika");
+		
+		for(Message m: this.messagesList) {
+			m.preRemove();
+		}
+		
+		for(Conversation c: this.conversationsList) {
+			c.getUsersList().remove(this);
+		}
+		this.conversationsList.clear();
+		
+		for(User u: this.friendsList) {
+			u.getFriendsList().remove(this);
+		}
+		this.friendsList.clear();
 	}
 
 }

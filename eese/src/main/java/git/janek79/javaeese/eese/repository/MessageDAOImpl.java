@@ -41,5 +41,11 @@ public class MessageDAOImpl implements MessageDAO {
 		Session session = sessionFactory.getCurrentSession();
 		return false;
 	}
+	
+//	@Override
+//	public void removeAllUserMessages(int userId) {
+//		Session session = sessionFactory.getCurrentSession();
+//		
+//	}
 
 }

@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -89,6 +90,13 @@ public class Message {
 	public String toString() {
 		return "Message [id=" + id + ", message=" + message + ", userId=" + userId + ", conversationId="
 				+ conversationId + ", date=" + date + "]";
-	}	
+	}
+	
+	@PreRemove
+	public void preRemove() {
+		System.out.println("Usuwanie wiadomości");
+		this.conversationId = null;
+		this.userId = null;
+	}
 	
 }
