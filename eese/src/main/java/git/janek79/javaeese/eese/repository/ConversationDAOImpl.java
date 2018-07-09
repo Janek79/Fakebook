@@ -80,26 +80,34 @@ public class ConversationDAOImpl implements ConversationDAO {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean deleteConversation(int conversationId) {
+		Session session = sessionFactory.getCurrentSession();
 		
-//		Conversation result = null;
-
-//		for (Conversation conversation : usersList.get(0).getConversationsList()) {
-//			System.out.println("Nowa pętla");
-//			System.out.println(conversation);
-//			result = conversation;
-//			if (conversation.getUsersList().size() == usersList.size()) {
-//				System.out.println("Ta sama wielkość");
-//				for (User user : usersList) {
-//					System.out.println(user);
-//					if (!conversation.getUsersList().contains(user)) {
-//						System.out.println("Null?");
-//						System.out.println(user);
-//						result = null;
-//						break;
-//					}
-//				}
-//			}
-//		}
+		Conversation conversation = session.get(Conversation.class, conversationId);
+		
+		if(conversation == null) {
+			System.out.println("Such conversation doesn't exist");
+			return false;
+		} else {
+//			conversation.preRemove();
+			
+			List<User> usersList = new ArrayList<>(conversation.getUsersList()); 
+			for (User u : usersList) {
+				u.getConversationsList().remove(conversation);
+				System.out.println("Removing user " + u);
+				for(Conversation c : u.getConversationsList()) {
+					System.out.println("Conversation");
+					System.out.println(c.getId());
+				}
+			}
+			conversation.getUsersList().clear();
+			
+			session.remove(conversation);
+			return true;
+		}
 
 	}
 }

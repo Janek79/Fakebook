@@ -2,6 +2,8 @@ package git.janek79.javaeese.eese.panel;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import git.janek79.javaeese.eese.entity.User;
+import git.janek79.javaeese.eese.listener.AutoRemoveTextListener;
 import git.janek79.javaeese.eese.service.UserService;
 
 public class SearchPanel extends JFrame {
@@ -48,7 +51,7 @@ public class SearchPanel extends JFrame {
 		panel.add(searchPanel);
 
 		JTextField friendSearchField = new JTextField();
-		friendSearchField.setMaximumSize(new Dimension(200, 30));
+		friendSearchField.setMaximumSize(new Dimension(160, 25));
 		friendSearchField.setText("type in searched user");
 		friendSearchField.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 		searchPanel.add(friendSearchField);
@@ -71,6 +74,8 @@ public class SearchPanel extends JFrame {
 		panel.add(btnAdd);
 
 		panel.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		friendSearchField.addMouseListener(new AutoRemoveTextListener("type in searched user", friendSearchField));
 
 		btnAdd.addActionListener((e) -> {
 			if (usersList.getSelectedValue() != null) {

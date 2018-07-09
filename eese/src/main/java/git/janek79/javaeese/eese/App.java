@@ -30,8 +30,6 @@ public class App {
 
 			new LoginPanel(frame, userService);
 			
-//			System.out.println(userService.getPossibleUsers(""));
-			
 			while(true) {
 				
 			}

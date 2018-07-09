@@ -199,12 +199,18 @@ public class UserService implements UserDAO, ConversationDAO {
 	
 	@Override
 	public boolean deleteFriendship(int user1Id, int user2Id) {
+		this.conversationDAO.deleteConversation(getConversationWithUser(user1Id, user2Id).getId());
 		return this.userDAO.deleteFriendship(user1Id, user2Id);
 	}
 	
-//	public boolean removeAccount() {
-//		
-//		return true;
-//	}
+	@Override
+	public boolean deleteConversation(int conversationId) {
+		return this.conversationDAO.deleteConversation(conversationId);
+	}
+	
+	@Override
+	public void updateUser(int userId) {
+		this.userDAO.updateUser(userId);
+	}
 	
 }

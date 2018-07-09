@@ -18,6 +18,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import git.janek79.javaeese.eese.entity.User;
+import git.janek79.javaeese.eese.listener.AutoRemoveTextListener;
 import git.janek79.javaeese.eese.service.UserService;
 
 public class LoginPanel {
@@ -114,57 +115,9 @@ public class LoginPanel {
 			new RegisterPanel(frame, userService);
 		});
 		
-		txt1.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (txt1.getText().equals("login")) {
-					txt1.setText("");
-				}
-			}
-		});
+		txt1.addMouseListener(new AutoRemoveTextListener("login", txt1));
 		
-		txt2.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (txt2.getText().equals("password")) {
-					txt2.setText("");
-				}
-			}
-		});
+		txt2.addMouseListener(new AutoRemoveTextListener("password", txt2));
 
 		panel1.revalidate();
 	}

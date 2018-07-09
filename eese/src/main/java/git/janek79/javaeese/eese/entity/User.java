@@ -163,5 +163,9 @@ public class User {
 		}
 		this.friendsList.clear();
 	}
+	
+	public void leaveConversation(Conversation conversation) {
+		this.conversationsList.remove(conversation);
+	}
 
 }

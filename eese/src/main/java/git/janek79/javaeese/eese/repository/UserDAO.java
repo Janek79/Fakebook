@@ -14,6 +14,8 @@ public interface UserDAO {
 	public User getUser(String firstName, String lastName);
 	public User getUser(int id);
 	
+	public void updateUser(int userId);
+	
 	public Set<User> getPossibleUsers(String string);
 	
 	public void joinConversation(int userId, int conversationId);

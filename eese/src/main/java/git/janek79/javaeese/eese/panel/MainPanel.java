@@ -32,7 +32,7 @@ public class MainPanel {
 	private static UserService userService;
 	private static User user;
 	private static Conversation currentConversation = null;
-	
+
 	private Font myFont = new Font("Arial", Font.BOLD, 20);
 
 	private static JList<User> lst1;
@@ -89,8 +89,12 @@ public class MainPanel {
 		pnl2.add(btn3);
 
 		JButton btn31 = new JButton("Conversation options");
-		btn31.setBounds(20, 410, 380, 30);
+		btn31.setBounds(20, 410, 185, 30);
 		pnl2.add(btn31);
+
+		JButton btn32 = new JButton("Load messages");
+		btn32.setBounds(215, 410, 185, 30);
+		pnl2.add(btn32);
 
 		pnl2.revalidate();
 
@@ -131,26 +135,11 @@ public class MainPanel {
 		btnOption.setAlignmentX(JComponent.CENTER_ALIGNMENT);
 		pnl1.add(btnOption);
 
-		// JPanel panelBtn = new JPanel();
-		// panelBtn.setBackground(new Color(203, 42, 20));
-		// panelBtn.setLayout(new BoxLayout(panelBtn, BoxLayout.LINE_AXIS));
-		// pnl1.add(panelBtn);
-		//
-		// JButton btn4 = new JButton("Log out");
-		// panelBtn.add(btn4);
-		//
-		// panelBtn.add(Box.createRigidArea(new Dimension(5, 0)));
-		//
-		// JButton btn5 = new JButton("Delete account");
-		// panelBtn.add(btn5);
-
 		panel.revalidate();
 		pnl2.revalidate();
 		pnl1.revalidate();
-		// panelBtn.revalidate();
 		pnl1.repaint();
 		pnl2.repaint();
-		// panelBtn.repaint();
 
 		// listeners
 		btn3.addActionListener((e) -> {
@@ -187,7 +176,7 @@ public class MainPanel {
 						System.out.println(currentConversation.getId());
 						updateConversation(txtArea1);
 					} else {
-						txtArea1.setText("Click again");
+						txtArea1.setText("Choose conversation");
 					}
 				}
 			}
@@ -212,18 +201,44 @@ public class MainPanel {
 		});
 
 		btnOption.addActionListener((e) -> {
+			updateUser();
+			updateFriendsList();
 
 			JPopupMenu menu = new JPopupMenu();
-			
-			JMenuItem searchFriendsItem = new JMenuItem("Search friends");
-			
-			
+
+			JMenuItem searchFriendsItem = new JMenuItem("Search friends...");
+
 			searchFriendsItem.addActionListener((event) -> {
 				new SearchPanel(frame, user, userService);
 			});
 			menu.add(searchFriendsItem);
 
-			
+			if (!this.user.getFriendsList().isEmpty()) {
+				JMenuItem deleteFriendItem = new JMenuItem("Remove friend...");
+
+				deleteFriendItem.addActionListener((event) -> {
+					User choosedUser = (User) JOptionPane.showInputDialog(frame, "Choose friend to remove from list",
+							"Goodbye", JOptionPane.INFORMATION_MESSAGE, null,
+							this.user.getFriendsList().toArray(new User[this.user.getFriendsList().size()]), null);
+
+					if (choosedUser != null) {
+						this.userService.deleteFriendship(this.user.getId(), choosedUser.getId());
+
+						JOptionPane.showMessageDialog(frame, "Friendship ended", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+						currentConversation = null;
+						
+						updateUser();
+						updateConversationsList();
+						updateFriendsList();
+						updateConversation(txtArea1);
+						
+					}
+				});
+
+				menu.add(deleteFriendItem);
+			}
+
 			JMenuItem logoutItem = new JMenuItem("Log out");
 
 			logoutItem.addActionListener((event) -> {
@@ -256,8 +271,7 @@ public class MainPanel {
 			});
 
 			menu.add(deleteAccountItem);
-			
-			
+
 			menu.show(frame, btnOption.getX(), btnOption.getY());
 
 		});
@@ -266,7 +280,7 @@ public class MainPanel {
 
 			JPopupMenu menu = new JPopupMenu();
 			JMenuItem item1 = new JMenuItem("Add friend to conversation...");
-			
+
 			if (currentConversation != null) {
 				item1.addActionListener((event) -> {
 					currentConversation = userService.getConversation(currentConversation.getId());
@@ -361,6 +375,10 @@ public class MainPanel {
 
 			menu.show(frame, btn31.getX(), btn31.getY());
 		});
+
+		btn32.addActionListener((e) -> {
+			updateConversation(txtArea1);
+		});
 	}
 
 	public void updateConversation(JTextArea textArea) {
@@ -385,11 +403,15 @@ public class MainPanel {
 		}
 		conversationsList.setListData(conList.toArray(new Conversation[conList.size()]));
 	}
-	
+
 	public static void updateFriendsList() {
 		List<User> friendsList = userService.getFriendsList(user.getId());
 
 		lst1.setListData(friendsList.toArray(new User[friendsList.size()]));
 	}
 	
+	public static void updateUser() {
+		user = userService.getUser(user.getId());
+	}
+
 }

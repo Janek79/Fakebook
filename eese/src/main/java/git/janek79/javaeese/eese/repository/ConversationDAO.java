@@ -13,4 +13,6 @@ public interface ConversationDAO {
 	public Conversation getConversation(List<Integer> usersId);
 	
 	public List<Message> getMessagesList(int conversationId);
+	
+	public boolean deleteConversation(int conversationId);
 }

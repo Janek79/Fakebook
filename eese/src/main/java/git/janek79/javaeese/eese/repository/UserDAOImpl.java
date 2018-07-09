@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import git.janek79.javaeese.eese.entity.Conversation;
-import git.janek79.javaeese.eese.entity.Message;
 import git.janek79.javaeese.eese.entity.User;
 
 @Repository
@@ -297,5 +294,14 @@ public class UserDAOImpl implements UserDAO {
 			System.out.println("Friendship removed");
 			return true;
 		}
+	}
+	
+	@Override
+	public void updateUser(int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user =  getUser(userId);
+		
+		session.update(user);
 	}
 }
