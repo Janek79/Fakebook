@@ -1,11 +1,8 @@
 package git.janek79.javaeese.eese.panel;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -13,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -21,24 +19,30 @@ import git.janek79.javaeese.eese.entity.User;
 import git.janek79.javaeese.eese.listener.AutoRemoveTextListener;
 import git.janek79.javaeese.eese.service.UserService;
 
-public class LoginPanel {
-	private UserService userService;
-	private User user = null;
+/**
+ * Frame that provides login function
+ * 
+ * @author Jan Jankowicz
+ *
+ */
+
+public class LoginPanel extends JFrame {
 	private Font myFont = new Font("Arial", Font.BOLD, 20);
-	
-	public LoginPanel(JFrame frame, UserService userService) {
-		this.userService = userService;
-		
-		frame.setSize(320, 240);
-		frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - frame.getSize().width) / 2,
-				(Toolkit.getDefaultToolkit().getScreenSize().height - frame.getSize().height) / 2);
-		frame.setVisible(true);
-		frame.setResizable(false);
+
+	public LoginPanel(UserService userService) {
+
+		setSize(320, 240);
+		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 2,
+				(Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 2);
+		setVisible(true);
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("Fakebook - Login");
 
 		JPanel panel1 = new JPanel();
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.PAGE_AXIS));
 		panel1.setVisible(true);
-		frame.add(panel1);
+		this.add(panel1);
 
 		panel1.add(Box.createRigidArea(new Dimension(0, 10)));
 
@@ -52,7 +56,7 @@ public class LoginPanel {
 		JTextField txt1 = new JTextField(1);
 		txt1.setText("login");
 		txt1.setMaximumSize(new Dimension(200, 20));
-		
+
 		panel1.add(txt1);
 
 		panel1.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -88,35 +92,26 @@ public class LoginPanel {
 
 		panel1.add(Box.createRigidArea(new Dimension(0, 15)));
 
-		JLabel lbl3 = new JLabel("wrong login or password");
-		lbl3.setFont(myFont);
-		lbl3.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-		lbl3.setVisible(false);
-		lbl3.setForeground(Color.red);
-		panel1.add(lbl3);
-		
 		btn1.addActionListener((e) -> {
 			if (e.getActionCommand().equals(btn1.getText())) {
-				user = userService.getUserbyLogin(txt1.getText(), txt2.getText());
+				User user = userService.getUserbyLogin(txt1.getText(), txt2.getText());
 				if (user != null) {
 					System.out.println("You've been logged in successfully!");
-					frame.remove(panel1);
-					new MainPanel(frame, user, userService);
+					new MainPanel(user, userService);
+					dispose();
 				} else {
-					System.out.println("Wrong login or password");
-					lbl3.setVisible(true);
-					frame.setSize(320, 280);
+					JOptionPane.showMessageDialog(this, "Wrong login or password");
 				}
 			}
 		});
-		
-		btn2.addActionListener((e)->{
-			frame.remove(panel1);
-			new RegisterPanel(frame, userService);
+
+		btn2.addActionListener((e) -> {
+			new RegisterPanel(userService);
+			dispose();
 		});
-		
+
 		txt1.addMouseListener(new AutoRemoveTextListener("login", txt1));
-		
+
 		txt2.addMouseListener(new AutoRemoveTextListener("password", txt2));
 
 		panel1.revalidate();

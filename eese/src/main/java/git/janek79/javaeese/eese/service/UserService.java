@@ -18,6 +18,13 @@ import git.janek79.javaeese.eese.repository.ConversationDAO;
 import git.janek79.javaeese.eese.repository.MessageDAO;
 import git.janek79.javaeese.eese.repository.UserDAO;
 
+/**
+ * This service contains all methods required for communication with database
+ * 
+ * @author Jan Jankowicz
+ *
+ */
+
 @Service
 public class UserService implements UserDAO, ConversationDAO {
 	@Autowired

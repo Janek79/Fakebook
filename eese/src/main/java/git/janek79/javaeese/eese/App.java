@@ -1,6 +1,9 @@
 package git.janek79.javaeese.eese;
 
+import java.awt.EventQueue;
+
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -24,11 +27,10 @@ public class App {
 			System.out.println("Hello World!");
 			userService = context.getBean(UserService.class);
 
-			JFrame frame = new JFrame("Fakebook");
-			frame.setVisible(true);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			SwingUtilities.invokeLater(()->{
+				new LoginPanel(userService);
+			});
 
-			new LoginPanel(frame, userService);
 			
 			while(true) {
 				

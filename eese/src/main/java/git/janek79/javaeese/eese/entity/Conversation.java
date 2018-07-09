@@ -72,62 +72,60 @@ public class Conversation {
 	public void setMessagesList(List<Message> messagesList) {
 		this.messagesList = messagesList;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
-		for(User user: this.usersList) {
+		for (User user : this.usersList) {
 			result.append(user.getFirstName() + " " + user.getLastName() + ", ");
 		}
-		return result.delete(result.length()-2, result.length()).toString();
+		return result.delete(result.length() - 2, result.length()).toString();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) {
+		if (this == obj) {
 			return true;
 		}
-		
-		if(obj instanceof Conversation) {
+
+		if (obj instanceof Conversation) {
 			List<User> objList = ((Conversation) obj).getUsersList();
-			if(objList.size() == getUsersList().size()) {
+			if (objList.size() == getUsersList().size()) {
 				Set<Integer> objIdList = new HashSet<>();
 				Set<Integer> thisIdList = new HashSet<>();
-				
-				for(User u: objList) {
+
+				for (User u : objList) {
 					objIdList.add(u.getId());
 				}
-				
-				for(User u: getUsersList()) {
+
+				for (User u : getUsersList()) {
 					thisIdList.add(u.getId());
 				}
-				
+
 				return objIdList.equals(thisIdList);
-			
+
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		int sum = 0;
-		for(User u: getUsersList()) {
-			sum =+ u.getId();
+		for (User u : getUsersList()) {
+			sum = +u.getId();
 		}
 		return sum;
 	}
-	
+
 	@PreRemove
 	public void preRemove() {
-		System.out.println("Usuwanie konwersacji");
-		
-		for(User u: this.usersList) {
+		for (User u : this.usersList) {
 			u.getConversationsList().remove(this);
 		}
-		
-		for(Message m: this.messagesList) {
+
+		for (Message m : this.messagesList) {
 			m.setConversationId(null);
 		}
 	}

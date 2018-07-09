@@ -25,12 +25,19 @@ import git.janek79.javaeese.eese.entity.User;
 import git.janek79.javaeese.eese.listener.AutoRemoveTextListener;
 import git.janek79.javaeese.eese.service.UserService;
 
+/**
+ * Search panel enable finding friends
+ * 
+ * @author Jan Jankowicz
+ *
+ */
+
 public class SearchPanel extends JFrame {
 	private boolean end = false;
 	private User searchedUser = null;
 	private JButton btnAdd;
 
-	public SearchPanel(JFrame parentFrame, User currentUser, UserService userService) {
+	public SearchPanel(MainPanel parentFrame, User currentUser, UserService userService) {
 		parentFrame.setEnabled(false);
 
 		setResizable(false);
@@ -74,19 +81,18 @@ public class SearchPanel extends JFrame {
 		panel.add(btnAdd);
 
 		panel.add(Box.createRigidArea(new Dimension(0, 10)));
-		
+
 		friendSearchField.addMouseListener(new AutoRemoveTextListener("type in searched user", friendSearchField));
 
 		btnAdd.addActionListener((e) -> {
 			if (usersList.getSelectedValue() != null) {
 				userService.addFriend(currentUser.getId(), usersList.getSelectedValue().getId());
-				
+
 				dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			} else {
 				JOptionPane.showMessageDialog(this, "You haven't choosed anyone", ":-(", JOptionPane.ERROR_MESSAGE);
 				btnAdd.setVisible(false);
 			}
-
 
 		});
 
@@ -141,12 +147,12 @@ public class SearchPanel extends JFrame {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				MainPanel.updateConversationsList();
-				MainPanel.updateFriendsList();
-				
+				parentFrame.updateConversationsList();
+				parentFrame.updateFriendsList();
+
 				parentFrame.repaint();
 				parentFrame.revalidate();
-				
+
 				parentFrame.setEnabled(true);
 			}
 

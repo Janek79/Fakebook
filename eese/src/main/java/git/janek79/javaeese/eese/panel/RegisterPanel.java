@@ -17,25 +17,29 @@ import javax.swing.JTextField;
 import git.janek79.javaeese.eese.entity.User;
 import git.janek79.javaeese.eese.service.UserService;
 
-public class RegisterPanel {
-	private JFrame frame;
+/**
+ * This frame lets user to create new account 
+ * 
+ * @author Jan Jankowicz
+ *
+ */
 
+public class RegisterPanel extends JFrame {
 	private Font myFont = new Font("Arial", Font.BOLD, 20);
 	private Font myFontMinor = new Font("Arial", Font.BOLD, 12);
 
-	public RegisterPanel(JFrame frame, UserService userService) {
-		this.frame = frame;
-
-		frame.setSize(new Dimension(320, 310));
-		frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - frame.getSize().width) / 2,
-				(Toolkit.getDefaultToolkit().getScreenSize().height - frame.getSize().height) / 2);
-		frame.setVisible(true);
-		frame.setResizable(false);
+	public RegisterPanel(UserService userService) {
+		setSize(new Dimension(320, 310));
+		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 2,
+				(Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 2);
+		setVisible(true);
+		setResizable(false);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		panel.setVisible(true);
-		frame.add(panel);
+		add(panel);
 
 		panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
@@ -102,8 +106,8 @@ public class RegisterPanel {
 
 		btn1.addActionListener((e) -> {
 			if (e.getActionCommand().equals(btn1.getText())) {
-				frame.remove(panel);
-				new LoginPanel(frame, userService);
+				new LoginPanel(userService);
+				dispose();
 			}
 		});
 
@@ -116,17 +120,16 @@ public class RegisterPanel {
 					if (u == null) {
 						try {
 							userService.addUser(txt3.getText(), txt4.getText(), txt1.getText(), txt2.getText());
-							frame.remove(panel);
-							new LoginPanel(frame, userService);
-							JOptionPane.showMessageDialog(frame, "User added correctly", ":-)",
+							JOptionPane.showMessageDialog(this, "User added correctly", ":-)",
 									JOptionPane.INFORMATION_MESSAGE);
+							
+							new LoginPanel(userService);
+							dispose();
 						} catch (Exception exc) {
-							JOptionPane.showMessageDialog(frame, "Don't use weird chars :-)", ":-(",
-									JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(this, "Don't use weird chars :-)");
 						}
 					} else {
-						JOptionPane.showMessageDialog(frame, "Such login already exists", ":-(",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, "Such login already exists");
 					}
 				}
 			}

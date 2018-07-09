@@ -147,8 +147,6 @@ public class User {
 	
 	@PreRemove
 	public void preRemove() {
-		System.out.println("Usuwanie użytkownika");
-		
 		for(Message m: this.messagesList) {
 			m.preRemove();
 		}

@@ -35,17 +35,5 @@ public class MessageDAOImpl implements MessageDAO {
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-	
-//	@Override
-	public boolean isNewMessageAppear(Date lastMessageTime) {
-		Session session = sessionFactory.getCurrentSession();
-		return false;
-	}
-	
-//	@Override
-//	public void removeAllUserMessages(int userId) {
-//		Session session = sessionFactory.getCurrentSession();
-//		
-//	}
 
 }
