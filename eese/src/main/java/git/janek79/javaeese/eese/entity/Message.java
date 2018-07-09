@@ -1,6 +1,5 @@
 package git.janek79.javaeese.eese.entity;
 
-
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -11,30 +10,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="messages")
+@Table(name = "messages")
 public class Message {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private int id;
-	
-	@Column(name="message")
+
+	@Column(name = "message")
 	private String message;
-	
-	@ManyToOne(cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinColumn(name="user_id")
+
+	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	@JoinColumn(name = "user_id")
 	private User userId;
-	
-	@ManyToOne(cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinColumn(name="conversation_id")
+
+	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+	@JoinColumn(name = "conversation_id")
 	private Conversation conversationId;
-	
-	@Column(name="date")
+
+	@Column(name = "date")
 	private Date date;
-	
+
 	public Message() {
 	}
 
@@ -89,6 +89,12 @@ public class Message {
 	public String toString() {
 		return "Message [id=" + id + ", message=" + message + ", userId=" + userId + ", conversationId="
 				+ conversationId + ", date=" + date + "]";
-	}	
-	
+	}
+
+	@PreRemove
+	public void preRemove() {
+		this.conversationId = null;
+		this.userId = null;
+	}
+
 }

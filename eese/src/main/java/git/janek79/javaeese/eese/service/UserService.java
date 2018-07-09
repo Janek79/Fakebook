@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,13 @@ import git.janek79.javaeese.eese.entity.User;
 import git.janek79.javaeese.eese.repository.ConversationDAO;
 import git.janek79.javaeese.eese.repository.MessageDAO;
 import git.janek79.javaeese.eese.repository.UserDAO;
+
+/**
+ * This service contains all methods required for communication with database
+ * 
+ * @author Jan Jankowicz
+ *
+ */
 
 @Service
 public class UserService implements UserDAO, ConversationDAO {
@@ -37,8 +47,8 @@ public class UserService implements UserDAO, ConversationDAO {
 		return this.userDAO.getUser(id);
 	}
 	
-	public void joinConversation(User user, Conversation conversation) {
-		userDAO.joinConversation(user, conversation);
+	public void joinConversation(int userId, int conversationId) {
+		userDAO.joinConversation(userId, conversationId);
 	}
 	
 	public void sendMessage(String message, User user, Conversation conversation) {
@@ -56,13 +66,13 @@ public class UserService implements UserDAO, ConversationDAO {
 	}
 
 	@Override
-	public void createConservation() {
-		this.conversationDAO.createConservation();
+	public Conversation createConservation() {
+		return this.conversationDAO.createConservation();
 	}
 	
 	@Override
-	public void createConservation(String title) {
-		this.conversationDAO.createConservation(title);
+	public Conversation createConservation(String title) {
+		return this.conversationDAO.createConservation(title);
 	}
 
 	@Override
@@ -105,8 +115,7 @@ public class UserService implements UserDAO, ConversationDAO {
 
 	@Override
 	public List<Conversation> getConversationsList(int userId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.userDAO.getConversationsList(userId);
 	}
 	
 	@Override
@@ -174,5 +183,41 @@ public class UserService implements UserDAO, ConversationDAO {
 	public Conversation getConversationWithUser(int user1Id, int user2Id) {
 		return this.userDAO.getConversationWithUser(user1Id, user2Id);
 	}
+	
+	@Override
+	public boolean deleteAccount(int userId) {
+		return this.userDAO.deleteAccount(userId);
+	}
 
+	@Override
+	public Conversation getConversation(List<Integer> usersId) {
+		return this.conversationDAO.getConversation(usersId);
+	}
+	
+	@Override
+	public void leftConversation(int userId, int conversationId) {
+		this.userDAO.leftConversation(userId, conversationId);
+	}
+	
+	@Override
+	public Set<User> getPossibleUsers(String string) {
+		return this.userDAO.getPossibleUsers(string);
+	}
+	
+	@Override
+	public boolean deleteFriendship(int user1Id, int user2Id) {
+		this.conversationDAO.deleteConversation(getConversationWithUser(user1Id, user2Id).getId());
+		return this.userDAO.deleteFriendship(user1Id, user2Id);
+	}
+	
+	@Override
+	public boolean deleteConversation(int conversationId) {
+		return this.conversationDAO.deleteConversation(conversationId);
+	}
+	
+	@Override
+	public void updateUser(int userId) {
+		this.userDAO.updateUser(userId);
+	}
+	
 }

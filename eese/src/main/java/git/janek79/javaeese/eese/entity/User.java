@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 @Entity
@@ -22,11 +25,11 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-	
-	@Column(name="login")
+
+	@Column(name = "login")
 	private String login;
-	
-	@Column(name="password")
+
+	@Column(name = "password")
 	private String password;
 
 	@Column(name = "first_name")
@@ -39,17 +42,12 @@ public class User {
 	@JoinTable(name = "user_conversation", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "conversation_id"))
 	private List<Conversation> conversationsList = new ArrayList<>();
 
-	@OneToMany(mappedBy = "userId", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
-			CascadeType.REFRESH })
+	@OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
 	private List<Message> messagesList = new ArrayList<>();
 
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	@JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user1_id"), inverseJoinColumns = @JoinColumn(name = "user2_id"))
 	private List<User> friendsList = new ArrayList<>();
-	
-	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-	@JoinTable(name = "friendships", joinColumns = @JoinColumn(name = "user2_id"), inverseJoinColumns = @JoinColumn(name = "user1_id"))
-	private List<User> friendsOfList = new ArrayList<>();
 
 	public User() {
 	}
@@ -95,7 +93,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + "]";
+		return getFirstName() + " " + getLastName() + ": " + getLogin();
 	}
 
 	public List<Message> getMessagesList() {
@@ -129,13 +127,43 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public List<User> getFriendsOfList() {
-		return friendsOfList;
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == this) {
+			return true;
+		}
+		
+		if(obj instanceof User) {
+			return ((User)obj).getId()==this.id;
+		}
+		return false;
 	}
-
-	public void setFriendsOfList(List<User> friendsOfList) {
-		this.friendsOfList = friendsOfList;
+	
+	@Override
+	public int hashCode() {
+		return this.id;
+	}
+	
+	@PreRemove
+	public void preRemove() {
+		for(Message m: this.messagesList) {
+			m.preRemove();
+		}
+		
+		for(Conversation c: this.conversationsList) {
+			c.getUsersList().remove(this);
+		}
+		this.conversationsList.clear();
+		
+		for(User u: this.friendsList) {
+			u.getFriendsList().remove(this);
+		}
+		this.friendsList.clear();
+	}
+	
+	public void leaveConversation(Conversation conversation) {
+		this.conversationsList.remove(conversation);
 	}
 
 }

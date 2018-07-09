@@ -1,6 +1,9 @@
 package git.janek79.javaeese.eese.repository;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -59,17 +62,17 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void joinConversation(User user, Conversation conversation) {
+	public void joinConversation(int userId, int conversationId) {
 		Session session = sessionFactory.getCurrentSession();
 
-		User u = session.get(User.class, user.getId());
-		Conversation c = session.get(Conversation.class, conversation.getId());
+		User u = session.get(User.class, userId);
+		Conversation c = session.get(Conversation.class, conversationId);
 
 		if (u != null && c != null) {
-			List<Conversation> list = session.get(User.class, user.getId()).getConversationsList();
+			List<Conversation> list = session.get(User.class, userId).getConversationsList();
 
 			if (!list.contains(c)) {
-				list.add(conversation);
+				list.add(c);
 			} else {
 				System.out.println("User already belong to this conversation!");
 			}
@@ -93,7 +96,11 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public List<Conversation> getConversationsList(int userId) {
-		return getUser(userId).getConversationsList();
+		Session session = sessionFactory.getCurrentSession();
+		
+		List<Conversation> conversationsList = session.get(User.class, userId).getConversationsList();
+		
+		return conversationsList;
 	}
 
 	@Override
@@ -188,11 +195,113 @@ public class UserDAOImpl implements UserDAO {
 			System.out.println("Nie zwróciło");
 			Conversation con = new Conversation();
 			session.save(con);
-			joinConversation(user1, con);
-			joinConversation(user2, con);
+			joinConversation(user1.getId(), con.getId());
+			joinConversation(user2.getId(), con.getId());
 			return con;
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean deleteAccount(int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user = session.get(User.class, userId);
+		
+		
+		if(user == null) {
+			System.out.println("Such user doesn't exist");
+			return false;
+		} else {
+			
+			List<Conversation> conversations = new ArrayList<>(user.getConversationsList());
+			for(Conversation conversation: conversations) {
+				if(conversation.getUsersList().size()==2) {
+					conversation.preRemove();
+					session.remove(conversation);
+				}
+			}
+
+		
+			user.preRemove();
+			session.remove(user);
+			
+			System.out.println("User has been removed");
+			return true;
+		}
+		
+	}
+	
+	@Override
+	public void leftConversation(int userId, int conversationId) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user = session.get(User.class, userId);
+		Conversation conversation = session.get(Conversation.class, conversationId);
+		
+		if(user == null || conversation == null) {
+			System.out.println("Such user or conversation doesn't exists");
+		} else {
+			user.getConversationsList().remove(conversation);
+		}
+	}
+	
+	@Override
+	public Set<User> getPossibleUsers(String string) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		Set<User> result = new HashSet<>();
+		
+		Set<User> firstNameResults = new HashSet<>(session.createQuery("FROM User u WHERE u.firstName LIKE '%" + string + "%'", User.class).getResultList());
+		Set<User> lastNameResults = new HashSet<>(session.createQuery("FROM User u WHERE u.lastName LIKE '%" + string + "%'", User.class).getResultList());
+		Set<User> loginNameResults = new HashSet<>(session.createQuery("FROM User u WHERE u.login LIKE '%" + string + "%'", User.class).getResultList());
+		
+		
+		String[] splited = string.split(" ");
+		if(splited.length > 1) {
+		Set<User> otherResults1 = new HashSet<>(session.createQuery("FROM User u WHERE u.firstName LIKE '%" + string.split(" ")[0] + "%'", User.class).getResultList());
+		Set<User> otherResults2 = new HashSet<>(session.createQuery("FROM User u WHERE u.lastName LIKE '%" + string.split(" ")[1] + "%'", User.class).getResultList());
+		Set<User> otherResults3 = new HashSet<>(session.createQuery("FROM User u WHERE u.lastName LIKE '%" + string.split(" ")[0] + "%'", User.class).getResultList());
+		Set<User> otherResults4 = new HashSet<>(session.createQuery("FROM User u WHERE u.firstName LIKE '%" + string.split(" ")[1] + "%'", User.class).getResultList());
+		
+		result.addAll(otherResults1);
+		result.addAll(otherResults2);
+		result.addAll(otherResults3);
+		result.addAll(otherResults4);
+		}
+		
+		result.addAll(firstNameResults);
+		result.addAll(lastNameResults);
+		result.addAll(loginNameResults);
+		
+		return result;
+	}
+	
+	@Override
+	public boolean deleteFriendship(int user1Id, int user2Id) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user1 = session.get(User.class, user1Id);
+		User user2 = session.get(User.class, user2Id);
+		
+		if(user1 == null || user2 == null) {
+			System.out.println("Users don't exist");
+			return false;
+		} else {
+			user1.getFriendsList().remove(user2);
+			user2.getFriendsList().remove(user1);
+			System.out.println("Friendship removed");
+			return true;
+		}
+	}
+	
+	@Override
+	public void updateUser(int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		User user =  getUser(userId);
+		
+		session.update(user);
 	}
 }

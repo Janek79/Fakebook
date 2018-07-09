@@ -3,7 +3,9 @@ package git.janek79.javaeese.eese.configuration;
 import java.beans.PropertyVetoException;
 import java.util.Properties;
 
+import org.hibernate.Interceptor;
 import org.hibernate.SessionFactory;
+import org.hibernate.service.ServiceRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
