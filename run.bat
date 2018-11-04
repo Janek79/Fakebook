@@ -1,0 +1,1 @@
+java -cp target/eese-0.0.1.jar git.janek79.javaeese.eese.App %*
